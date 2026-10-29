@@ -11,8 +11,7 @@
     "lint": "eslint .",
     "test": "vitest run tests/unit",
     "test:e2e": "playwright test",
-    "test:visual": "playwright test visual",
-    "audit": "node scripts/audit.mjs"
+    "test:visual": "playwright test visual"
   },
   "dependencies": {
     "@fontsource-variable/roboto-mono": "^5.2.0",

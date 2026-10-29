@@ -32,8 +32,14 @@ Mobile: início `14:5226`, detalhe `15:5536`, carrinho `16:360`, pagamento `16:7
 
 - [x] Acesso ao Figma e inventário de telas.
 - [x] Plano inicial.
-- [ ] Base e assets.
-- [ ] API simulada e tempo real.
+- [x] Base e assets da home.
+- [x] API simulada e tempo real iniciais (validação completa depende dos fluxos).
 - [ ] Interface e fluxos.
 - [ ] Testes e auditorias.
 - [ ] Documentação e publicação.
+
+## Progresso e dependência de design
+
+Em 29/10/2026, a cota mensal do MCP Figma Starter interrompeu a extração após início desktop/mobile. O usuário escolheu usar imagens exportadas antes de continuar as demais telas. A implementação visual restante aguarda essas imagens. Referências extraídas foram preservadas localmente em `.design/` (ignoradas pelo Git); assets necessários estão em `public/assets`.
+
+Concluídos nesta etapa: catálogo responsivo, filtros combinados e paginação na URL, estados vazio/erro/skeleton, painel de cenários, atualização do catálogo via Socket.IO, contratos de conta/carrinho/pedidos e testes iniciais. Telas de detalhe, carrinho, pagamento, confirmação, login, cadastro, perfil e carteiras ainda não estão concluídas. README/arquitetura/roteiro de estudo são preliminares.
