@@ -1,0 +1,7 @@
+node_modules
+dist
+.design
+public
+playwright-report
+test-results
+package-lock.json
