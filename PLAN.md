@@ -15,7 +15,7 @@ Referência: Figma `MyWoBOc1rDIB63aXDxMM48`. Stack obrigatória: React, TypeScri
 | Testes | E2E, contratos, falhas, responsividade e oito baselines desktop/mobile. |
 | Performance | WebP, skeleton do detalhe, Lighthouse e relatórios. |
 | Documentação | README, arquitetura e performance. |
-| Publicação | Configuração Vercel preparada; deploy público pendente. |
+| Publicação | Produção em https://desafio-junglegaming-frontend.vercel.app. |
 
 O histórico de Git registra essas etapas em commits separados.
 
@@ -38,7 +38,7 @@ O histórico de Git registra essas etapas em commits separados.
 - [x] Baselines de início, detalhe, carrinho e pagamento versionadas.
 - [x] Configuração e 12 relatórios Lighthouse HTML/JSON; medianas em `PERFORMANCE.md`.
 - [x] README, arquitetura e resultados consolidados.
-- [ ] Deploy público e validação da URL de produção.
+- [x] Deploy público, rotas diretas e 26 testes de conta, compra e resiliência aprovados na Vercel em desktop/mobile.
 
 ## Referências de design
 

@@ -4,7 +4,7 @@ Desafio frontend em React e TypeScript: descoberta, compra e área do colecionad
 
 - [Repositório](https://github.com/oMarcook/desafio-junglegaming-frontend)
 - [Layout de referência no Figma](https://www.figma.com/design/MyWoBOc1rDIB63aXDxMM48/Frontend-Challenge--Copy-?node-id=0-1).
-- **URL pública:** publicação pendente. A configuração para Vercel está disponível em `vercel.json`.
+- **Aplicação:** [desafio-junglegaming-frontend.vercel.app](https://desafio-junglegaming-frontend.vercel.app)
 
 ## Funcionalidades
 
@@ -152,9 +152,22 @@ Os contratos completos, as políticas de cache/sessão, os limites do transporte
 
 ## Deploy na Vercel
 
-1. Importe o repositório ou execute `npx vercel login` e `npx vercel --prod`.
-2. Selecione **Vite**, build `npm run build`, saída `dist`, Node 24 e `VITE_ENABLE_MOCKS=true`.
-3. `vercel.json` aplica fallback da SPA. Confira abertura direta e refresh de `/nft/nft-1` e `/profile`, faça uma compra e teste tempo real.
-4. Registre aqui a URL e o commit publicado.
+Produção: **[desafio-junglegaming-frontend.vercel.app](https://desafio-junglegaming-frontend.vercel.app)**. Publicação realizada em 30/10/2026, com os mocks habilitados. A aplicação pode ser acessada sem uma conta da Vercel; use as credenciais fictícias acima para os fluxos autenticados.
+
+O projeto utiliza o preset **Vite**, build `npm run build`, saída `dist` e Node.js **26.x** na Vercel, compatível com `engines.node` do projeto. Para publicar atualizações pelo terminal:
+
+```sh
+npx vercel login
+npx vercel link --project desafio-junglegaming-frontend
+npx vercel deploy --prod --build-env VITE_ENABLE_MOCKS=true --build-env VITE_API_URL=/api
+```
+
+O repositório está conectado ao projeto na Vercel. Para publicações pela integração Git, configure `VITE_ENABLE_MOCKS=true` e `VITE_API_URL=/api` no ambiente Production. Esses também são os valores padrão da aplicação.
+
+`vercel.json` define o build e o fallback da SPA, mantendo o service worker e os assets acessíveis. `.vercelignore` exclui arquivos temporários e relatórios do upload. Credenciais locais da Vercel e arquivos `.env` ficam fora do Git; `.env.example` permanece versionado.
+
+Após publicar, confira abertura direta e refresh de `/nft/nft-1` e `/profile`, conclua uma compra e use o painel de demonstração para testar alterações de preço e reconexão. Os dados simulados pertencem ao navegador e ao domínio: a instalação local e o site publicado têm bancos independentes.
+
+Validação da publicação em 30/10/2026: acesso público e rotas diretas verificados; 26 testes de conta, compra e resiliência aprovados na URL de produção, em desktop e mobile.
 
 Carteira, blockchain, gateway e login social reais não fazem parte do escopo. Ações auxiliares indisponíveis informam isso, sem aparentar sucesso. Ajustes em relação ao Figma estão na arquitetura.
