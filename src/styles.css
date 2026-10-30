@@ -191,7 +191,6 @@ input[type="radio"] {
 .hero-dots {
   margin: 44px 0 0 auto;
 }
-.hero-mini,
 .mobile-title,
 .mobile-description,
 .mobile-search,
@@ -934,15 +933,6 @@ main:focus {
     height: auto;
     aspect-ratio: 1;
     border-radius: 16px;
-  }
-  .hero-mini {
-    display: block;
-    position: absolute;
-    width: 64px;
-    height: 64px;
-    bottom: -8px;
-    left: 12px;
-    border-radius: 14px;
   }
   .catalog-layout {
     display: block;

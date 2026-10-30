@@ -202,13 +202,6 @@ export function HomePage() {
             height="450"
             fetchPriority="high"
           />
-          <img
-            className="hero-mini"
-            src="/assets/83794.webp"
-            alt=""
-            width="64"
-            height="64"
-          />
         </div>
       </section>
       <section className="catalog-layout" id="catalog">
