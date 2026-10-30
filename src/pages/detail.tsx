@@ -8,7 +8,7 @@ import {
   useNft,
   useSession,
 } from "../lib/queries";
-import { ErrorState, Skeleton, useNotice } from "../components/feedback";
+import { ErrorState, useNotice } from "../components/feedback";
 import { PageHeading, Quantity, Recommendations } from "../components/market";
 import { Button } from "../components/ui/button";
 import { Dialog } from "../components/ui/dialog";
@@ -27,7 +27,7 @@ export function DetailPage() {
     [zoom, setZoom] = useState(false),
     [tab, setTab] = useState("details"),
     [selectedImage, setSelectedImage] = useState(0);
-  if (query.isPending) return <Skeleton />;
+  if (query.isPending) return <DetailSkeleton />;
   if (query.isError)
     return <ErrorState error={query.error} retry={() => query.refetch()} />;
   const nft = query.data,
@@ -238,6 +238,46 @@ export function DetailPage() {
           alt={`Imagem ampliada de ${nft.name}`}
         />
       </Dialog>
+    </div>
+  );
+}
+
+function DetailSkeleton() {
+  return (
+    <div
+      className="detail-page detail-loading"
+      role="status"
+      aria-label="Carregando conteúdo"
+    >
+      <PageHeading title="Detalhes do NFT" />
+      <div className="detail-layout">
+        <div className="gallery">
+          <div className="thumbnails">
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className="skeleton" style={{ height: 100 }} />
+            ))}
+          </div>
+          <div className="main-art">
+            <div className="skeleton" style={{ aspectRatio: "1" }} />
+          </div>
+        </div>
+        <div className="detail-info">
+          {[85, 65, 95, 70, 90, 60, 80].map((width, i) => (
+            <div
+              key={i}
+              className="skeleton"
+              style={{
+                height: i === 0 ? 36 : 24,
+                width: `${width}%`,
+                marginBottom: 24,
+              }}
+            />
+          ))}
+        </div>
+      </div>
+      <div className="loading-description">
+        <div className="skeleton" style={{ height: 24, width: "60%" }} />
+      </div>
     </div>
   );
 }

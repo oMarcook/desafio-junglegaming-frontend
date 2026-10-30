@@ -196,7 +196,7 @@ export function HomePage() {
         </div>
         <div className="hero-art">
           <img
-            src="/assets/8f387.png"
+            src="/assets/8f387.webp"
             alt="Emerald Ape, personagem com jaqueta verde e óculos de sol"
             width="450"
             height="450"
@@ -204,7 +204,7 @@ export function HomePage() {
           />
           <img
             className="hero-mini"
-            src="/assets/83794.png"
+            src="/assets/83794.webp"
             alt=""
             width="64"
             height="64"
@@ -219,7 +219,7 @@ export function HomePage() {
             <p>OFERTA LIMITADA</p>
             <Link to="/nft/$id" params={{ id: "nft-2" }}>
               <img
-                src="/assets/83794.png"
+                src="/assets/83794.webp"
                 alt="Sage Nomad em destaque"
                 width="310"
                 height="368"
@@ -322,12 +322,12 @@ export function HomePage() {
       <section className="promos">
         {[
           [
-            "8f387.png",
+            "8f387.webp",
             "Lançamentos gênesis de edição limitada",
             "Colecione edições escassas diretamente dos criadores antes da revelação pública.",
           ],
           [
-            "9add2.png",
+            "9add2.webp",
             "Arte digital selecionada e muito mais",
             "Explore novos artistas, coleções verificadas e obras digitais que definem a cultura.",
           ],
@@ -359,22 +359,22 @@ export function HomePage() {
         <div className="journal-grid">
           {[
             [
-              "9add2.png",
+              "9add2.webp",
               "Como funciona a propriedade de NFTs",
               "Aprenda a colecionar, negociar e verificar ativos digitais.",
             ],
             [
-              "8f387.png",
+              "8f387.webp",
               "10 artistas digitais para acompanhar",
               "Conheça criadores que moldam a cultura digital.",
             ],
             [
-              "83794.png",
+              "83794.webp",
               "Raridade, atributos e procedência",
               "Entenda raridade, procedência, direitos autorais e utilidade.",
             ],
             [
-              "b7cfc.png",
+              "b7cfc.webp",
               "Como proteger sua carteira",
               "Proteja seus ativos, evite golpes e navegue com segurança.",
             ],

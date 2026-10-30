@@ -22,15 +22,15 @@ const prices = [
   "0.39",
 ];
 const images = [
-  "8f387.png",
-  "83794.png",
-  "9add2.png",
-  "83794.png",
-  "83794.png",
-  "9add2.png",
-  "b7cfc.png",
-  "b7cfc.png",
-  "b7cfc.png",
+  "8f387.webp",
+  "83794.webp",
+  "9add2.webp",
+  "83794.webp",
+  "83794.webp",
+  "9add2.webp",
+  "b7cfc.webp",
+  "b7cfc.webp",
+  "b7cfc.webp",
 ];
 export const collections = [
   "Arte digital",

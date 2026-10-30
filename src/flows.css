@@ -2,6 +2,18 @@
   font-weight: 700;
   margin: 32px 0 12px;
 }
+.detail-loading .detail-info {
+  min-height: 510px;
+}
+.detail-loading .loading-description {
+  min-height: 900px;
+  padding-top: 96px;
+}
+@media (max-width: 600px) {
+  .detail-loading .detail-info {
+    min-height: 620px;
+  }
+}
 .mobile-page-heading {
   display: none;
 }
