@@ -17,7 +17,7 @@ import {
   useNotice,
 } from "../components/feedback";
 import { PageHeading, Totals } from "../components/market";
-import { CheckCircle2, Clock3, XCircle } from "lucide-react";
+import { Clock3, XCircle } from "lucide-react";
 type Collector = z.infer<typeof collectorSchema>;
 interface Draft extends Collector {
   username: string;
@@ -548,7 +548,41 @@ export function OrderPage({ id }: { id: string }) {
       </a>
       <header>
         {order.status === "confirmed" ? (
-          <CheckCircle2 size={64} />
+          <svg
+            className="receipt-thanks"
+            width="80"
+            height="84"
+            viewBox="0 0 80 84"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            aria-hidden="true"
+          >
+            <path d="M14 36 8 42v36h64V42l-6-6M8 42l25 25m39-25L47 67M8 78l25-29a9 9 0 0 1 14 0l25 29" />
+            <path d="M14 49V12a4 4 0 0 1 4-4h44a4 4 0 0 1 4 4v37M32 8l4-4a6 6 0 0 1 8 0l4 4" />
+            <text
+              x="40"
+              y="28"
+              textAnchor="middle"
+              fill="currentColor"
+              stroke="none"
+              fontSize="12"
+              fontWeight="700"
+            >
+              THANK
+            </text>
+            <text
+              x="40"
+              y="41"
+              textAnchor="middle"
+              fill="currentColor"
+              stroke="none"
+              fontSize="12"
+              fontWeight="700"
+            >
+              YOU
+            </text>
+          </svg>
         ) : order.status === "declined" ? (
           <XCircle size={64} />
         ) : (
@@ -589,20 +623,39 @@ export function OrderPage({ id }: { id: string }) {
       </dl>
       <div className="receipt-body">
         <h2>Detalhes da transação</h2>
-        {order.quote.items.map((i) => (
-          <article key={`${i.nftId}-${i.editionId}`}>
-            <img src={i.image} alt={i.name} width="70" height="70" />
-            <div>
-              <strong>{i.name}</strong>
-              <p>
-                Edição {i.edition} (× {i.quantity})
-              </p>
-            </div>
-            <strong>{i.total} ETH</strong>
-          </article>
-        ))}
+        <table className="receipt-items">
+          <caption className="sr-only">NFTs deste pedido</caption>
+          <thead>
+            <tr>
+              <th scope="col">NFTs</th>
+              <th scope="col">Edições</th>
+              <th scope="col">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {order.quote.items.map((i) => (
+              <tr key={`${i.nftId}-${i.editionId}`}>
+                <th scope="row">
+                  <div className="receipt-product">
+                    <img src={i.image} alt="" width="70" height="70" />
+                    <div>
+                      <strong>{i.name}</strong>
+                      <p>
+                        ID do token: #
+                        {i.nftId.replace("nft-", "").padStart(4, "0")}
+                      </p>
+                      <small>Edição {i.edition}</small>
+                    </div>
+                  </div>
+                </th>
+                <td>× {i.quantity}</td>
+                <td>{i.total} ETH</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
         <Totals quote={order.quote} />
-        <p className="muted">Pedido {order.id}</p>
+        <p className="muted receipt-order-id">Pedido {order.id}</p>
         {order.status === "confirmed" ? (
           <>
             <p>
@@ -616,7 +669,7 @@ export function OrderPage({ id }: { id: string }) {
                 )
               }
             >
-              Ver transação simulada
+              Ver no explorador (simulado)
             </Button>
           </>
         ) : order.status === "declined" ? (
@@ -632,6 +685,9 @@ export function OrderPage({ id }: { id: string }) {
             Consultar estado
           </Button>
         )}
+        <Link className="receipt-orders-link" to="/orders">
+          Voltar aos meus pedidos
+        </Link>
       </div>
     </section>
   );

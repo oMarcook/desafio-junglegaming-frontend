@@ -80,6 +80,7 @@ Diálogos Radix controlam foco, Escape e retorno ao acionador. Skeletons usam sh
 ### Ajustes de UX em relação às imagens
 
 - Dados de demonstração substituem contagens, estoque e valores estáticos. Uma edição esgotada permanece visível e explicitamente marcada.
+- No detalhe mobile, a seleção de edição usa texto e sublinhado, sem o contorno arredondado. Os ícones de Google e Facebook são SVGs locais. O menu do perfil inclui atividade, ofertas, downloads e suporte com avisos de indisponibilidade, conforme o escopo.
 - Labels de formulário permanecem visíveis no mobile. Checkout inclui os dados necessários à validação, controles de conexão e revisão antes do envio, mesmo quando o frame móvel os omite.
 - Avatar aceita PNG/JPEG/WebP de até 500 KB; preview, remoção e persistência são reais na simulação. Carteiras possuem seletor entre registros e ação de adicionar.
 - Metadados e referências de transação são identificados como simulados. Campos complementares do colecionador são enviados no snapshot; observação/indicação não causam ações externas ou descontos.

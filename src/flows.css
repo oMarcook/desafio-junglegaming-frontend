@@ -777,7 +777,7 @@
 }
 .receipt {
   max-width: 578px;
-  margin: 46px auto 0;
+  margin: 142px auto 0;
   background: var(--muted);
   border-bottom: 10px solid var(--primary);
   position: relative;
@@ -834,28 +834,70 @@
   font-weight: 700;
   margin-bottom: 20px;
 }
-.receipt-body article {
+.receipt-items {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.receipt-items thead th {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+}
+.receipt-items tbody th,
+.receipt-items tbody td {
+  padding: 12px 0;
+  font-weight: 400;
+}
+.receipt-items th:first-child {
+  width: 60%;
+}
+.receipt-items td:nth-child(2) {
+  color: var(--secondary);
+  white-space: nowrap;
+  text-align: center;
+  font-size: 12px;
+}
+.receipt-items th:last-child,
+.receipt-items td:last-child {
+  text-align: right;
+}
+.receipt-items td:last-child {
+  color: var(--accent);
+  font-size: 18px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.receipt-product {
   display: flex;
   gap: 12px;
   align-items: center;
-  margin-bottom: 14px;
 }
-.receipt-body article img {
+.receipt-product img {
   border-radius: 8px;
   width: 70px;
   height: 70px;
 }
-.receipt-body article > div {
+.receipt-product > div {
   flex: 1;
 }
-.receipt-body article p {
+.receipt-product p,
+.receipt-product small {
   font-size: 12px;
   color: var(--secondary);
   margin-top: 5px;
 }
-.receipt-body article > strong {
+.receipt-product small {
+  display: block;
+}
+.receipt-orders-link {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
   color: var(--accent);
-  white-space: nowrap;
+}
+.receipt .receipt-order-id {
+  font-size: 11px;
 }
 .receipt-body > p {
   text-align: center;
@@ -1050,6 +1092,15 @@
   }
   .detail-info h2 {
     display: none;
+  }
+  .edition-options label {
+    border: 0;
+    border-radius: 0;
+    border-bottom: 2px solid transparent;
+    padding: 6px 8px;
+  }
+  .edition-options label.selected {
+    border-bottom-color: var(--accent);
   }
   .detail-actions {
     margin-top: 20px;
@@ -1413,17 +1464,18 @@
   .receipt-body {
     padding: 24px 16px;
   }
-  .receipt-body article {
+  .receipt-product {
     gap: 8px;
   }
-  .receipt-body article img {
+  .receipt-product img {
     width: 50px;
     height: 50px;
   }
-  .receipt-body article > div {
+  .receipt-product > div {
     font-size: 12px;
   }
-  .receipt-body article > strong {
+  .receipt-items td:last-child,
+  .receipt-items thead th {
     font-size: 12px;
   }
   .receipt-body > .bg-primary {
