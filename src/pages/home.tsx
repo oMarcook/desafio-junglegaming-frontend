@@ -1,5 +1,5 @@
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Heart, SlidersHorizontal } from "lucide-react";
 import type { CatalogSearch, Nft } from "../domain/types";
 import {
@@ -61,6 +61,13 @@ export function HomePage() {
     [heroSlide, setHeroSlide] = useState(0),
     [draft, setDraft] = useState(search.q),
     notice = useNotice();
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = window.setTimeout(() => {
+      setHeroSlide((current) => (current + 1) % heroSlides.length);
+    }, 2000);
+    return () => window.clearTimeout(timer);
+  }, [heroSlide]);
   function change(patch: Partial<CatalogSearch>) {
     void navigate({ to: "/", search: { ...search, page: 1, ...patch } });
   }

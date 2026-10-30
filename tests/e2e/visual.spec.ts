@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { addNft, connect, login, review } from "./helpers";
 test("visual home with stable fixtures", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
   await expect(page.locator(".nft-card").first()).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
