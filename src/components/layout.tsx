@@ -9,7 +9,8 @@ import {
   LogOut,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { api, clearPrivateData, queryClient } from "../lib/api";
+import { api, queryClient } from "../lib/api";
+import { useLogout } from "../lib/auth";
 import { useCart, useSession } from "../lib/queries";
 import { connectRealtime } from "../lib/realtime";
 import { useNotice } from "./feedback";
@@ -23,6 +24,7 @@ export function Layout() {
     [online, setOnline] = useState(false),
     [demo, setDemo] = useState(false);
   const connection = useRef<ReturnType<typeof connectRealtime> | null>(null);
+  const logout = useLogout();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const authPage = pathname === "/login" || pathname === "/register";
   const receiptPage = pathname.startsWith("/orders/");
@@ -59,13 +61,6 @@ export function Layout() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
-  async function logout() {
-    connection.current?.dispose();
-    await api.post("/session/logout");
-    clearPrivateData();
-    await queryClient.invalidateQueries({ queryKey: ["session"] });
-    window.location.assign("/");
-  }
   const total = cart.data?.items.reduce((sum, i) => sum + i.quantity, 0) || 0;
   return (
     <>
@@ -142,7 +137,12 @@ export function Layout() {
                   <Link to="/profile" aria-label="Meu perfil">
                     <UserRound size={20} />
                   </Link>
-                  <button onClick={logout} aria-label="Sair">
+                  <button
+                    type="button"
+                    onClick={() => logout.mutate()}
+                    disabled={logout.isPending}
+                    aria-label={logout.isPending ? "Saindo…" : "Sair"}
+                  >
                     <LogOut size={18} />
                   </button>
                 </>

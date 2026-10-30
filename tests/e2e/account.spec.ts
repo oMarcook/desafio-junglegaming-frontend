@@ -89,6 +89,10 @@ test("registration validates and persists profile, avatar and password", async (
     .getByRole("navigation", { name: "Área do colecionador" })
     .getByRole("button", { name: "Sair" })
     .click();
+  await expect(page).toHaveURL((url) => url.pathname === "/");
+  await expect(
+    page.getByText("Você saiu da sua conta.", { exact: true }),
+  ).toBeVisible();
   await login(page, "teste@kurio.test", "SenhaFinal123!", "/profile");
   await expect(page.getByLabel("Nome de exibição")).toHaveValue(
     "Colecionador Atualizado",
@@ -145,6 +149,10 @@ test("favorite failure rolls back and session switch isolates private data", asy
     .getByRole("navigation", { name: "Área do colecionador" })
     .getByRole("button", { name: "Sair" })
     .click();
+  await expect(page).toHaveURL((url) => url.pathname === "/");
+  await expect(
+    page.getByText("Você saiu da sua conta.", { exact: true }),
+  ).toBeVisible();
   await login(page, "alex@kurio.test", "Kurio123!", "/favorites");
   await expect(
     page.getByRole("heading", { name: "Nenhum favorito ainda" }),

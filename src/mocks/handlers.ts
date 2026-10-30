@@ -124,6 +124,11 @@ export const handlers = [
         "Sua sessão expirou. Entre novamente para continuar.",
       );
     try {
+      if (path === "/session/logout" && method === "POST") {
+        db.session = null;
+        save();
+        return HttpResponse.json({ ok: true });
+      }
       const body =
         method === "GET" || method === "DELETE"
           ? {}
@@ -133,11 +138,6 @@ export const handlers = [
           user: account()?.user ?? null,
           expiresAt: db.session?.expiresAt ?? null,
         });
-      if (path === "/session/logout") {
-        db.session = null;
-        save();
-        return HttpResponse.json({ ok: true });
-      }
       if (path === "/session/login" || path === "/session/register") {
         const input = parse(
           path.endsWith("register") ? registerSchema : loginSchema,

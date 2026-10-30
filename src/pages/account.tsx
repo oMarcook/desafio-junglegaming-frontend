@@ -13,7 +13,7 @@ import {
   CircleHelp,
 } from "lucide-react";
 import { api, queryClient } from "../lib/api";
-import { logout } from "../lib/auth";
+import { useLogout } from "../lib/auth";
 import { formValues, useApiForm } from "../lib/forms";
 import {
   useCatalog,
@@ -41,6 +41,7 @@ import { initialSearch, NftCard } from "./home";
 export function AccountLayout({ children }: { children: ReactNode }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const notice = useNotice();
+  const logout = useLogout();
   return (
     <div className="account-layout">
       <aside className="account-sidebar">
@@ -94,9 +95,14 @@ export function AccountLayout({ children }: { children: ReactNode }) {
               </button>
             ),
           )}
-          <button className="account-logout" onClick={logout}>
+          <button
+            type="button"
+            className="account-logout"
+            onClick={() => logout.mutate()}
+            disabled={logout.isPending}
+          >
             <LogOut size={18} />
-            Sair
+            {logout.isPending ? "Saindo…" : "Sair"}
           </button>
         </nav>
       </aside>

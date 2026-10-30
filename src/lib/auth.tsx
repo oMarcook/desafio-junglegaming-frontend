@@ -1,8 +1,9 @@
-import { Navigate, redirect } from "@tanstack/react-router";
+import { Navigate, redirect, useNavigate } from "@tanstack/react-router";
+import { useMutation } from "@tanstack/react-query";
 import type { ReactNode } from "react";
-import { api, clearPrivateData, queryClient } from "./api";
+import { api, clearPrivateData, errorMessage, queryClient } from "./api";
 import { sessionOptions, useSession } from "./queries";
-import { ErrorState, Skeleton } from "../components/feedback";
+import { ErrorState, Skeleton, useNotice } from "../components/feedback";
 export function safeReturn(value: unknown) {
   return typeof value === "string" &&
     value.startsWith("/") &&
@@ -41,9 +42,20 @@ export function Protected({ children }: { children: ReactNode }) {
     );
   return children;
 }
-export async function logout() {
-  await api.post("/session/logout");
-  clearPrivateData();
-  queryClient.setQueryData(["session"], { user: null, expiresAt: null });
-  window.location.assign("/");
+export function useLogout() {
+  const navigate = useNavigate();
+  const notice = useNotice();
+  return useMutation({
+    mutationFn: async () => {
+      await api.post("/session/logout");
+      await queryClient.cancelQueries();
+    },
+    onSuccess: async () => {
+      await navigate({ href: "/", replace: true });
+      clearPrivateData();
+      queryClient.setQueryData(["session"], { user: null, expiresAt: null });
+      notice("Você saiu da sua conta.");
+    },
+    onError: (error) => notice(`Não foi possível sair. ${errorMessage(error)}`),
+  });
 }
