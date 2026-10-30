@@ -1018,7 +1018,7 @@ main:focus {
   .mobile-nav a {
     padding: 16px;
   }
-  .mobile-nav a:first-child {
+  .mobile-nav a.active {
     color: var(--accent);
   }
   .mobile-nav .scan {

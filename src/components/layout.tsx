@@ -177,10 +177,16 @@ export function Layout() {
               tab: "all",
             }}
             aria-label="Início"
+            className={pathname === "/" ? "active" : undefined}
+            activeOptions={{ exact: true, includeSearch: false }}
           >
             <Home />
           </Link>
-          <Link to="/favorites" aria-label="Favoritos">
+          <Link
+            to="/favorites"
+            aria-label="Favoritos"
+            className={pathname === "/favorites" ? "active" : undefined}
+          >
             <Heart />
           </Link>
           <button
@@ -194,10 +200,27 @@ export function Layout() {
           >
             <ScanLine />
           </button>
-          <Link to="/cart" aria-label={`Carrinho, ${total} itens`}>
+          <Link
+            to="/cart"
+            aria-label={`Carrinho, ${total} itens`}
+            className={pathname === "/cart" ? "active" : undefined}
+          >
             <ShoppingCart />
           </Link>
-          <Link to="/profile" aria-label="Perfil">
+          <Link
+            to="/profile"
+            aria-label="Perfil"
+            className={
+              ["/profile", "/wallets", "/orders"].includes(pathname)
+                ? "active"
+                : undefined
+            }
+            aria-current={
+              ["/profile", "/wallets", "/orders"].includes(pathname)
+                ? "page"
+                : undefined
+            }
+          >
             <UserRound />
           </Link>
         </nav>
