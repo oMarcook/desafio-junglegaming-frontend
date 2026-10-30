@@ -1,4 +1,4 @@
-# Arquitetura — estado da primeira etapa
+# Arquitetura — Kurio
 
 ## Camadas
 
@@ -41,9 +41,9 @@ As rotas `/simulation/*` são exclusivas dos mocks e controlam cenário, reset, 
 
 Preços trafegam como strings. `wei()` converte para `BigInt` com 18 casas; `eth()` faz a conversão inversa, sem `Number` nos cálculos monetários. A taxa simulada é `0.016 ETH`; `KURIO10` aplica 10% sobre o subtotal, truncado no menor inteiro wei.
 
-Cada cotação registra no backend um identificador, dono, conteúdo e expiração. A criação compara esse conteúdo com uma nova leitura de preços/estoque/cupom. Uma cotação expirada ou alterada retorna 409. A interface de revisão explícita ainda será implementada.
+Cada cotação registra no backend um identificador, dono, conteúdo e expiração. A criação compara esse conteúdo com uma nova leitura de preços/estoque/cupom. Uma cotação expirada ou alterada retorna 409. O checkout consulta uma cotação antes de abrir a revisão e novamente ao confirmar. A assinatura inclui itens, quantidades, preços, versão, disponibilidade, cupom, taxa e total. Mudança mantém a revisão aberta com aviso e exige nova confirmação; esgotamento bloqueia o envio.
 
-Idempotência é indexada por usuário e chave. A mesma chave e conteúdo retornam o pedido existente; conteúdo diferente retorna 409. A resposta pode se perder depois da criação no cenário `order-timeout`. O cliente de checkout deverá preservar a tentativa e repetir o mesmo conteúdo/chave, comportamento ainda pendente na UI.
+Idempotência é indexada por usuário e chave. A mesma chave e conteúdo retornam o pedido existente; conteúdo diferente retorna 409. A resposta pode se perder depois da criação no cenário `order-timeout`. O cliente persiste chave e corpo em `kurio.attempt.<userId>` antes do POST, usa trava imediata para cliques repetidos e não cria outra chave para recuperar uma resposta perdida. A recuperação tem prioridade sobre o carrinho vazio, pois o pedido pode já ter sido confirmado. Respostas 4xx definitivas liberam a tentativa; 401 preserva-a para novo login; falhas sem resposta mantêm a tentativa para recuperação explícita.
 
 Pedidos pendentes guardam a data de resolução. Timers e consultas REST finalizam a simulação. Uma nova carga recupera o estado persistido. Confirmado/recusado são terminais. Na confirmação, o estoque é validado e reduzido e somente as quantidades compradas são descontadas do carrinho. O recibo guarda cópias de itens, preços, taxas, carteira e dados do colecionador.
 
@@ -51,7 +51,9 @@ Pedidos pendentes guardam a data de resolução. Timers e consultas REST finaliz
 
 A simulação guarda seu banco em `localStorage`, chave `kurio.mock.database.v1`. É um mecanismo de demonstração, não um backend seguro multiusuário. Os dados pertencem ao navegador e podem ser editados por quem tem acesso a ele. Não há cookie HttpOnly nem autenticação de produção.
 
-A sessão dura uma hora e é validada nas operações privadas. O interceptor Axios limpa dados privados quando recebe 401 de uma operação protegida. O login mescla o carrinho visitante respeitando disponibilidade. O logout da interface desconecta o socket e limpa o cache privado. Os formulários de autenticação e retomada de checkout ainda estão pendentes.
+A sessão dura uma hora e é validada nas operações privadas. TanStack Router faz a proteção inicial com `beforeLoad`, e `Protected` reage à expiração enquanto a tela está aberta. O destino interno é validado por `safeReturn` para impedir redirecionamento externo. Um timer revalida a sessão no vencimento. O interceptor Axios cancela consultas e remove dados privados ao receber 401; a query de sessão permanece observável e recebe `user: null`. O checkout exige sessão também ao cotar. Handlers com latência rejeitam operações privadas/carrinho/cotação quando a identidade muda enquanto a requisição está em andamento.
+
+O login mescla o carrinho visitante respeitando disponibilidade e copia seu cupom quando a conta ainda não tem um. O logout encerra a sessão e limpa cache privado; o efeito de tempo real libera a conexão anterior. As chaves privadas incluem o usuário. Rascunhos `kurio.checkout.<userId>` e tentativas de compra sobrevivem à expiração para retomada somente na mesma conta. O reset remove ambos os namespaces e recria o banco. Os dados locais não são secretos: isolamento de UI/cache não transforma localStorage em um backend seguro.
 
 Senhas são derivadas com PBKDF2/SHA-256, 100 mil iterações e salt aleatório. Fixtures públicas não devem receber dados pessoais ou senhas reais.
 
@@ -69,14 +71,26 @@ O transporte é WebSocket (`socket.io-client`, `transports: ['websocket']`), int
 
 Fonte Roboto Mono local, cores `#140d0a`, `#241612`, `#d28a4c`, `#e89b55`, `#f5f1eb`, `#cfb28c`. Assets originais do Figma foram baixados localmente e não dependem de URLs temporárias.
 
-Foram extraídos os frames `2:2` e `14:5226` do arquivo `MyWoBOc1rDIB63aXDxMM48`. O MCP Starter bloqueou as leituras seguintes. O usuário escolheu fornecer imagens exportadas antes da implementação das demais telas. Essa é uma pendência de fidelidade, não uma tela considerada concluída.
+Foram extraídos os frames `2:2` e `14:5226` do arquivo `MyWoBOc1rDIB63aXDxMM48`. Após a cota mensal do MCP bloquear leituras adicionais, o usuário forneceu 13 ZIPs com referências de detalhe, carrinho, pagamento, confirmação, login, cadastro, perfil e carteiras. Os PNGs de referência ficam em `.design/` local, fora do Git; todos os assets necessários à execução estão versionados. Perfil, carteiras e recibo foram adaptados ao mobile, que não tinha frame específico.
 
 A home acrescenta campo de busca desktop, ordenação mobile, checkboxes visíveis, entradas numéricas de faixa de preço e paginação mobile para os comportamentos do enunciado. Contagens vêm das 36 fixtures, não dos números estáticos do Figma. A ordenação dos dados permanece consistente entre desktop e mobile. O rodapé oferece apenas ações coerentes com a demonstração; artigos e newsletter informam sua indisponibilidade.
 
-Diálogos Radix controlam foco, Escape e retorno ao acionador. Skeletons usam shimmer e respeitam movimento reduzido. Mensagens de mutations/eventos usam região `role=status`. Há link de salto, labels, foco visível e testes de overflow em 390/768/1440 pixels. A conformidade completa de acessibilidade ainda depende das demais telas e auditorias.
+Diálogos Radix controlam foco, Escape e retorno ao acionador. Skeletons usam shimmer e respeitam movimento reduzido. O detalhe reserva a composição da galeria e das seções para reduzir deslocamentos. Mensagens de mutations/eventos usam região `role=status`. Há link de salto, labels, erros associados, foco visível e testes de overflow nas telas principais em 390/768/1440 pixels. Lighthouse cobre início e detalhe; isso não representa uma certificação completa WCAG.
+
+### Ajustes de UX em relação às imagens
+
+- Dados de demonstração substituem contagens, estoque e valores estáticos. Uma edição esgotada permanece visível e explicitamente marcada.
+- Labels de formulário permanecem visíveis no mobile. Checkout inclui os dados necessários à validação, controles de conexão e revisão antes do envio, mesmo quando o frame móvel os omite.
+- Avatar aceita PNG/JPEG/WebP de até 500 KB; preview, remoção e persistência são reais na simulação. Carteiras possuem seletor entre registros e ação de adicionar.
+- Metadados e referências de transação são identificados como simulados. Campos complementares do colecionador são enviados no snapshot; observação/indicação não causam ações externas ou descontos.
+- Galeria repete a imagem do NFT, como na exportação recebida; não foram inventadas vistas alternativas. Miniaturas selecionam o destaque e a ampliação usa diálogo.
+- Login social, recuperação de senha por e-mail, páginas editoriais/suporte e newsletter informam indisponibilidade. O compartilhamento usa a área de transferência. Avaliações são ilustrativas, não conteúdo produzido por usuários reais.
+- Os quatro PNGs originais foram preservados; WebPs de 960 px/qualidade 88 são usados na UI. A redução foi de 7.959.897 para 349.636 bytes (95,6%). A fonte é local.
 
 ## Validação e limites
 
-As verificações iniciais cobrem catálogo e contratos críticos da API. Testes que chamam fetch diretamente são testes de integração através do MSW, não substituem os fluxos E2E de compra/conta exigidos. As baselines verificam regressões da implementação, não equivalência automática com o Figma.
+Playwright cobre catálogo, URL/histórico, acesso direto, conta, favoritos com rollback, carrinho, cotação, checkout, idempotência, recibo, expiração, validações, falhas de rede, eventos antigos/duplicados e retomada. Testes de integração que usam fetch passam pelos handlers MSW; os fluxos de compra/conta também são percorridos pela UI. Relógio é instalado antes do bootstrap no cenário sensível de pedido pendente. Cada teste usa um contexto de navegador isolado.
 
-O build inclui os mocks por padrão. Ainda faltam os fluxos completos, auditorias Lighthouse, relatórios de performance, deploy público e testes em checkout limpo após concluir a aplicação. As imagens PNG originais têm aproximadamente 2 MB cada; a estratégia de otimização deverá preservar a aparência e ser medida na auditoria, sem remover funcionalidades.
+As baselines de início/detalhe/carrinho/pagamento verificam regressões da implementação, não equivalência automática com o Figma. O painel de demonstração é mascarado nas comparações. As auditorias reais e seu ambiente estão em `PERFORMANCE.md` e `reports/lighthouse/`. O build inclui mocks por padrão. Publicação foi explicitamente adiada pelo usuário; não há URL pública validada.
+
+Limites: banco local por origem e sem coordenação transacional entre abas; sem backend multiusuário, blockchain, cobrança ou envio de e-mail; preço em ETH é apenas unidade da demonstração inclusive para fixtures de outras redes; favoritos consultam as quatro páginas da fixture fixa de 36 NFTs; a simulação não é uma arquitetura de produção. Uma evolução real exigiria API autenticada, armazenamento seguro no servidor, paginação própria de favoritos, validação de endereços por rede e tratamento de concorrência/reserva de estoque no backend.
