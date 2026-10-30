@@ -3,8 +3,36 @@
 Desafio frontend em React e TypeScript: descoberta, compra e área do colecionador, com APIs, autenticação, carteiras, pagamentos e tempo real simulados na camada de rede.
 
 - [Repositório](https://github.com/oMarcook/desafio-junglegaming-frontend)
-- [Design Figma](https://www.figma.com/design/MyWoBOc1rDIB63aXDxMM48/Frontend-Challenge--Copy-?node-id=0-1): home obtida via MCP; demais telas baseadas nos 13 ZIPs exportados pelo usuário.
-- **Deploy público:** adiado por decisão do usuário em 30/10/2026. Nenhuma URL pública foi criada. A configuração está pronta, mas este requisito do desafio permanece pendente. Os commits são locais; não houve push automático.
+- [Layout de referência no Figma](https://www.figma.com/design/MyWoBOc1rDIB63aXDxMM48/Frontend-Challenge--Copy-?node-id=0-1).
+- **URL pública:** publicação pendente. A configuração para Vercel está disponível em `vercel.json`.
+
+## Funcionalidades
+
+- Catálogo com destaques, busca, filtros combinados, ordenação e paginação na URL.
+- Detalhe do NFT com galeria, edições, disponibilidade, quantidade e favoritos.
+- Carrinho persistente, edição de itens, cupons e cotação com precisão em ETH.
+- Checkout com dados do colecionador, carteira/rede, revisão e criação idempotente do pedido.
+- Pedidos pendentes, confirmados ou recusados, recuperação após timeout e recibo imutável.
+- Cadastro, login, logout, expiração de sessão, edição de perfil/avatar/senha e carteiras.
+- Atualizações de preço, disponibilidade e pedido via Socket.IO, com reconciliação REST.
+- Layouts responsivos, estados de carregamento/erro/vazio e operação por teclado.
+
+O escopo completo está em [REQUIREMENTS.md](REQUIREMENTS.md). Blockchain, extensões de carteira e pagamentos reais estão fora do escopo.
+
+## Tecnologias
+
+| Responsabilidade | Tecnologia |
+| --- | --- |
+| Interface e linguagem | React e TypeScript |
+| Roteamento e parâmetros da URL | TanStack Router |
+| Estado remoto e cache | TanStack Query |
+| Cliente HTTP e integração | Axios e REST |
+| Tempo real | Socket.IO client |
+| Estilização e componentes | Tailwind CSS e shadcn/ui com Radix |
+| Simulação de rede e eventos | MSW e `@mswjs/socket.io-binding` |
+| Testes E2E e regressão visual | Playwright |
+| Auditoria de qualidade | Lighthouse |
+| Build e validação de dados | Vite e Zod |
 
 ## Executar
 
@@ -46,7 +74,7 @@ Para auditar: `npm run build`, `npm run preview` e, em outro terminal, `npm run 
 
 Validação em 30/10/2026: **49 E2E aprovados**, um caso de foco exclusivo mobile ignorado no projeto desktop, **3 testes unitários aprovados**, TypeScript/lint/build aprovados. As quatro combinações página/perfil atingiram as metas Lighthouse: performance 91–99, acessibilidade 98–100, boas práticas e SEO 100. O relatório entregue não contém falhas; traces são retidos automaticamente quando uma execução falha.
 
-Uma cópia limpa dos arquivos do commit `bb42d4c`, criada por `git archive`, também passou por `npm ci` e `npm run build`, sem aproveitar o `node_modules` de desenvolvimento. A instalação reportou zero vulnerabilidades conhecidas. O build emitiu apenas avisos de anotações de tree-shaking do Zod, sem erro de compilação.
+Uma instalação limpa também foi verificada com `npm ci` e `npm run build`, sem aproveitar o `node_modules` de desenvolvimento.
 
 ## Ambiente
 
@@ -110,9 +138,19 @@ Rotas: `/`, `/nft/:id`, `/cart`, `/checkout`, `/orders/:id`, `/login`, `/registe
 | `tests/` | E2E, visual e testes monetários. |
 | `reports/`, `scripts/` | Evidências e auditoria reproduzível. |
 
-Toda a stack obrigatória participa: TanStack Router/Query, Axios, Tailwind, shadcn/ui com Radix, MSW, Socket.IO client/binding, Playwright e Lighthouse. Leia [ARCHITECTURE.md](ARCHITECTURE.md), [STUDY_GUIDE.md](STUDY_GUIDE.md) e [PLAN.md](PLAN.md).
+## Contratos, sessão e sincronização
 
-## Publicar depois na Vercel
+Os recursos REST usam o prefixo `/api`: sessão/conta, NFTs, favoritos, carrinho, cotação, pedidos, perfil e carteiras. Erros retornam `{ code, message, fields? }`, com estados HTTP para validação, sessão inválida, falta de permissão, recurso inexistente, conflito e indisponibilidade. A criação de pedidos exige o header `Idempotency-Key`.
+
+A sessão simulada dura uma hora. Rotas privadas verificam autenticação e preservam o destino para retomada. O carrinho visitante é mesclado no login; dados privados do cache e conexões da sessão anterior são limpos na troca de conta. Rascunhos e tentativas de compra ficam separados por usuário.
+
+O cache usa `staleTime` de 30 segundos, `gcTime` de cinco minutos e revalidação no foco. A sessão usa `staleTime` de dez segundos. Consultas tentam novamente uma vez em falhas de rede/5xx; mutations não repetem automaticamente. Favoritos usam atualização otimista com rollback. Requisições obsoletas são canceladas pelo `AbortSignal` do Axios.
+
+Eventos `nft.updated` e `order.updated` carregam identidade, recurso e versão. O cliente ignora versões antigas/duplicadas e eventos de outro usuário; ao reconectar, consulta novamente os recursos ativos via REST. MSW intercepta o transporte WebSocket utilizado pelo cliente Socket.IO.
+
+Os contratos completos, as políticas de cache/sessão, os limites do transporte simulado e as decisões de UX estão em [ARCHITECTURE.md](ARCHITECTURE.md). As medições, ferramentas e condições das auditorias estão em [PERFORMANCE.md](PERFORMANCE.md).
+
+## Deploy na Vercel
 
 1. Importe o repositório ou execute `npx vercel login` e `npx vercel --prod`.
 2. Selecione **Vite**, build `npm run build`, saída `dist`, Node 24 e `VITE_ENABLE_MOCKS=true`.

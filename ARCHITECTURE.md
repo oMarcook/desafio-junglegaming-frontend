@@ -71,7 +71,7 @@ O transporte é WebSocket (`socket.io-client`, `transports: ['websocket']`), int
 
 Fonte Roboto Mono local, cores `#140d0a`, `#241612`, `#d28a4c`, `#e89b55`, `#f5f1eb`, `#cfb28c`. Assets originais do Figma foram baixados localmente e não dependem de URLs temporárias.
 
-Foram extraídos os frames `2:2` e `14:5226` do arquivo `MyWoBOc1rDIB63aXDxMM48`. Após a cota mensal do MCP bloquear leituras adicionais, o usuário forneceu 13 ZIPs com referências de detalhe, carrinho, pagamento, confirmação, login, cadastro, perfil e carteiras. Os PNGs de referência ficam em `.design/` local, fora do Git; todos os assets necessários à execução estão versionados. Perfil, carteiras e recibo foram adaptados ao mobile, que não tinha frame específico.
+O layout segue os frames do arquivo Figma `MyWoBOc1rDIB63aXDxMM48`, com referências desktop e mobile de início, detalhe, carrinho, pagamento, confirmação, login, cadastro, perfil e carteiras. Todos os assets necessários à execução estão versionados. Perfil, carteiras e recibo foram adaptados ao mobile, que não tinha frame específico.
 
 A home acrescenta campo de busca desktop, ordenação mobile, checkboxes visíveis, entradas numéricas de faixa de preço e paginação mobile para os comportamentos do enunciado. Contagens vêm das 36 fixtures, não dos números estáticos do Figma. A ordenação dos dados permanece consistente entre desktop e mobile. O rodapé oferece apenas ações coerentes com a demonstração; artigos e newsletter informam sua indisponibilidade.
 

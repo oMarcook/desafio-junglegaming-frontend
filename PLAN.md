@@ -14,7 +14,7 @@ Referência: Figma `MyWoBOc1rDIB63aXDxMM48`. Stack obrigatória: React, TypeScri
 | Correções | Expiração, identidade durante requisições lentas, reset e metadados do checkout. |
 | Testes | E2E, contratos, falhas, responsividade e oito baselines desktop/mobile. |
 | Performance | WebP, skeleton do detalhe, Lighthouse e relatórios. |
-| Documentação | README, arquitetura, performance e roteiro de estudo. |
+| Documentação | README, arquitetura e performance. |
 | Publicação | Configuração Vercel preparada; execução adiada pelo usuário. |
 
 O histórico de Git registra essas etapas em commits separados. Não foi feito push automático.
@@ -37,7 +37,7 @@ O histórico de Git registra essas etapas em commits separados. Não foi feito p
 - [x] Três testes unitários monetários, tipos, lint e build aprovados.
 - [x] Baselines de início, detalhe, carrinho e pagamento versionadas.
 - [x] Configuração e 12 relatórios Lighthouse HTML/JSON; medianas em `PERFORMANCE.md`.
-- [x] README e guia de estudo consolidados.
+- [x] README, arquitetura e resultados consolidados.
 - [ ] Deploy público: adiado explicitamente pelo usuário em 30/10/2026.
 
 ## Referências de design
@@ -46,4 +46,4 @@ Desktop: início `2:2`, detalhe `10:244`, carrinho `11:1278`, pagamento `11:2862
 
 Mobile: início `14:5226`, detalhe `15:5536`, carrinho `16:360`, pagamento `16:748`, login `16:1022`, cadastro `16:1228`.
 
-O MCP Figma alcançou a cota mensal após a extração da home. Por escolha do usuário, a referência restante veio de 13 arquivos ZIP exportados, incluindo o perfil do colecionador. Os arquivos de referência estão em `.design/` local, ignorados pelo Git; os assets necessários ao funcionamento estão em `public/assets/`. As diferenças de UX e os limites da simulação estão em `ARCHITECTURE.md`.
+Os assets necessários ao funcionamento estão em `public/assets/`. As diferenças de UX em relação aos layouts de referência e os limites da simulação estão em `ARCHITECTURE.md`.
