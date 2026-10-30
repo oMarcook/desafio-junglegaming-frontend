@@ -189,7 +189,27 @@ input[type="radio"] {
   border-radius: 24px;
 }
 .hero-dots {
-  margin: 44px 0 0 auto;
+  display: flex;
+  width: fit-content;
+  margin: 28px 0 0 auto;
+}
+.hero-dots button {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+.hero-dots button span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+.hero-dots button[aria-pressed="true"] span {
+  outline: 1px solid var(--primary);
+  outline-offset: 3px;
+  background: var(--foreground);
 }
 .mobile-title,
 .mobile-description,
@@ -892,6 +912,7 @@ main:focus {
   .hero-copy {
     width: 58%;
     flex-shrink: 0;
+    position: static;
   }
   .eyebrow {
     font-size: 12px;
@@ -1041,6 +1062,14 @@ main:focus {
     height: 200px;
   }
   .hero .hero-dots {
-    display: none;
+    display: flex;
+    position: absolute;
+    right: 12px;
+    bottom: 6px;
+    margin: 0;
+  }
+  .hero .hero-dots button {
+    width: 32px;
+    height: 32px;
   }
 }

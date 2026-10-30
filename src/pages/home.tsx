@@ -38,12 +38,27 @@ const categories = [
   "Assinaturas",
   "Utilidade",
 ];
+const heroSlides = [
+  {
+    image: "/assets/8f387.webp",
+    description: "Emerald Ape, personagem com jaqueta verde e óculos de sol",
+  },
+  {
+    image: "/assets/83794.webp",
+    description: "Sage Nomad, personagem com chapéu e moletom roxo",
+  },
+  {
+    image: "/assets/9add2.webp",
+    description: "Neon Vessel, personagem com paletó claro",
+  },
+];
 export function HomePage() {
   const raw = useSearch({ strict: false }),
     search = { ...initialSearch, ...raw } as CatalogSearch;
   const navigate = useNavigate(),
     catalog = useCatalog(search),
     [filterOpen, setFilterOpen] = useState(false),
+    [heroSlide, setHeroSlide] = useState(0),
     [draft, setDraft] = useState(search.q),
     notice = useNotice();
   function change(patch: Partial<CatalogSearch>) {
@@ -192,12 +207,30 @@ export function HomePage() {
           <Button asChild>
             <a href="#catalog">EXPLORAR</a>
           </Button>
-          <img className="hero-dots" src="/assets/a11b7.svg" alt="" />
+          <div
+            className="hero-dots"
+            role="group"
+            aria-label="Selecionar NFT em destaque"
+          >
+            {heroSlides.map((slide, index) => (
+              <button
+                key={slide.image}
+                type="button"
+                aria-label={`Mostrar ${slide.description.split(",")[0]}`}
+                aria-pressed={heroSlide === index}
+                aria-controls="hero-image"
+                onClick={() => setHeroSlide(index)}
+              >
+                <span />
+              </button>
+            ))}
+          </div>
         </div>
         <div className="hero-art">
           <img
-            src="/assets/8f387.webp"
-            alt="Emerald Ape, personagem com jaqueta verde e óculos de sol"
+            id="hero-image"
+            src={heroSlides[heroSlide].image}
+            alt={heroSlides[heroSlide].description}
             width="450"
             height="450"
             fetchPriority="high"
