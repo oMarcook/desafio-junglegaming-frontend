@@ -17,6 +17,7 @@ import {
 import { Button } from "../components/ui/button";
 import { Dialog } from "../components/ui/dialog";
 import { errorMessage } from "../lib/api";
+export const featuredNftId = "nft-2";
 export const initialSearch: CatalogSearch = {
   q: "",
   collections: "",
@@ -250,7 +251,7 @@ export function HomePage() {
           <div className="featured">
             <h2>NFT EM DESTAQUE</h2>
             <p>OFERTA LIMITADA</p>
-            <Link to="/nft/$id" params={{ id: "nft-2" }}>
+            <Link to="/nft/$id" params={{ id: featuredNftId }}>
               <img
                 src="/assets/83794.webp"
                 alt="Sage Nomad em destaque"

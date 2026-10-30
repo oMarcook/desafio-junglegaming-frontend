@@ -37,7 +37,7 @@ import {
   Skeleton,
   useNotice,
 } from "../components/feedback";
-import { initialSearch, NftCard } from "./home";
+import { featuredNftId, initialSearch, NftCard } from "./home";
 export function AccountLayout({ children }: { children: ReactNode }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const notice = useNotice();
@@ -58,9 +58,10 @@ export function AccountLayout({ children }: { children: ReactNode }) {
             },
             { to: "/favorites", text: "Lista de interesse", icon: Heart },
             {
+              to: "/nft/$id",
+              params: { id: featuredNftId },
               text: "Ofertas",
               icon: Tags,
-              message: "Ofertas não estão disponíveis nesta demonstração.",
             },
             {
               text: "Arquivos baixados",
@@ -79,6 +80,7 @@ export function AccountLayout({ children }: { children: ReactNode }) {
               <Link
                 key={item.to}
                 to={item.to}
+                params={item.params}
                 className={path === item.to ? "selected" : ""}
               >
                 <item.icon size={18} />
