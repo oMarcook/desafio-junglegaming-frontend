@@ -43,7 +43,7 @@ npm run preview
 npm run audit
 ```
 
-`AUDIT_URL` permite outro servidor, mas latência/hosting podem mudar os resultados. Os números são de laboratório local, não dados de usuários reais nem uma medição do deploy, que foi adiado.
+`AUDIT_URL` permite outro servidor, mas latência/hosting podem mudar os resultados. Os números são de laboratório local, não dados de usuários reais nem uma medição do ambiente de produção.
 
 ## Otimizações e limites observados
 
