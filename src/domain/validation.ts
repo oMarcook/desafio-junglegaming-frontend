@@ -23,7 +23,10 @@ export const profileSchema = z.object({
   username: z.string().trim().min(2, "Informe seu nome de usuário").optional(),
   ens: z
     .string()
-    .regex(/^$|^[a-z0-9-]+\.eth$/, "Use um nome terminado em .eth")
+    .regex(
+      /^$|^[a-z0-9-]+(?:\.[a-z0-9-]+)*\.eth$/,
+      "Use um nome terminado em .eth",
+    )
     .optional(),
   walletLabel: z.string().max(60).optional(),
   name: z.string().trim().min(2, "Informe seu nome"),
@@ -52,7 +55,7 @@ export const walletSchema = z.object({
   address: z
     .string()
     .regex(
-      /^(0x[a-fA-F0-9]{40}|[a-z0-9-]+\.eth|[1-9A-HJ-NP-Za-km-z]{32,44})$/,
+      /^(0x[a-fA-F0-9]{40}|[a-z0-9-]+(?:\.[a-z0-9-]+)*\.eth|[1-9A-HJ-NP-Za-km-z]{32,44})$/,
       "Endereço de carteira inválido",
     ),
   network: z.enum(["Ethereum", "Polygon", "Solana"]),
@@ -64,10 +67,24 @@ export const walletSchema = z.object({
   referral: z.string().max(60).optional(),
   ens: z
     .string()
-    .regex(/^$|^[a-z0-9-]+\.eth$/, "Use um nome terminado em .eth")
+    .regex(
+      /^$|^[a-z0-9-]+(?:\.[a-z0-9-]+)*\.eth$/,
+      "Use um nome terminado em .eth",
+    )
     .optional(),
 });
 export const collectorSchema = z.object({
+  username: z.string().trim().min(2, "Informe seu nome de usuário").optional(),
+  profileName: z.string().trim().min(2, "Informe o nome do perfil").optional(),
+  ens: z
+    .string()
+    .regex(
+      /^$|^[a-z0-9-]+(?:\.[a-z0-9-]+)*\.eth$/,
+      "Use um nome terminado em .eth",
+    )
+    .optional(),
+  referral: z.string().max(60).optional(),
+  note: z.string().max(500).optional(),
   name: z.string().trim().min(2, "Informe seu nome"),
   email,
   phone: z.string().min(8, "Informe um telefone").max(30),

@@ -61,6 +61,10 @@ export async function hashPassword(password: string, salt: string) {
   ).join("");
 }
 export async function reset(scenario: Scenario = "default") {
+  for (const key of Object.keys(localStorage)) {
+    if (key.startsWith("kurio.checkout.") || key.startsWith("kurio.attempt."))
+      localStorage.removeItem(key);
+  }
   const accounts = await Promise.all(
     users.map(async (user) => {
       const salt = crypto.randomUUID();

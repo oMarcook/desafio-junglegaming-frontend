@@ -133,7 +133,7 @@ function CheckoutForm({ userId }: { userId: string }) {
       extra.username = "Informe seu nome de usuário";
     if (draft.profileName.trim().length < 2)
       extra.profileName = "Informe o nome do perfil";
-    if (draft.ens && !/^[a-z0-9-]+\.eth$/.test(draft.ens))
+    if (draft.ens && !/^[a-z0-9-]+(?:\.[a-z0-9-]+)*\.eth$/.test(draft.ens))
       extra.ens = "Use um nome terminado em .eth";
     if (!result.success)
       Object.assign(

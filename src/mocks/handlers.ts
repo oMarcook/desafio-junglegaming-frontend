@@ -101,6 +101,11 @@ export const handlers = [
     if (scenario === "server-error")
       return fail(503, "UNAVAILABLE", "Serviço indisponível. Tente novamente.");
     if (
+      ["/cart", "/quote"].includes(path) &&
+      requestUser !== account()?.user.id
+    )
+      return fail(401, "SESSION_CHANGED", "A sessão mudou. Tente novamente.");
+    if (
       scenario === "expired-session" &&
       path !== "/session/login" &&
       path !== "/session/register"

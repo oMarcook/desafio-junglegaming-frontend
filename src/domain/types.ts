@@ -83,7 +83,16 @@ export interface Order {
   version: number;
   quote: Quote;
   wallet: Wallet;
-  collector: { name: string; email: string; phone: string };
+  collector: {
+    name: string;
+    email: string;
+    phone: string;
+    username?: string;
+    profileName?: string;
+    ens?: string;
+    referral?: string;
+    note?: string;
+  };
   transaction: string;
   createdAt: number;
   settleAt: number;
