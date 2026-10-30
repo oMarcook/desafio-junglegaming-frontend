@@ -42,7 +42,7 @@ export const profileSchema = z.object({
 });
 export const passwordSchema = z
   .object({
-    currentPassword: z.string().min(1),
+    currentPassword: z.string().min(1, "Preencha a senha atual"),
     password,
     confirmation: z.string(),
   })

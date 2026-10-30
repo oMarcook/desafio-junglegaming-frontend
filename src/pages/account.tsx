@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -7,6 +7,10 @@ import {
   Heart,
   ShoppingCart,
   LogOut,
+  Activity,
+  Tags,
+  Download,
+  CircleHelp,
 } from "lucide-react";
 import { api, queryClient } from "../lib/api";
 import { logout } from "../lib/auth";
@@ -36,6 +40,7 @@ import {
 import { initialSearch, NftCard } from "./home";
 export function AccountLayout({ children }: { children: ReactNode }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const notice = useNotice();
   return (
     <div className="account-layout">
       <aside className="account-sidebar">
@@ -44,19 +49,52 @@ export function AccountLayout({ children }: { children: ReactNode }) {
           {[
             { to: "/profile", text: "Dados do perfil", icon: UserRound },
             { to: "/wallets", text: "Carteiras", icon: WalletIcon },
+            {
+              text: "Atividade",
+              icon: Activity,
+              message:
+                "O histórico de atividades está fora do escopo desta demonstração. Suas compras estão em Meus pedidos.",
+            },
             { to: "/favorites", text: "Lista de interesse", icon: Heart },
+            {
+              text: "Ofertas",
+              icon: Tags,
+              message: "Ofertas não estão disponíveis nesta demonstração.",
+            },
+            {
+              text: "Arquivos baixados",
+              icon: Download,
+              message: "Downloads não estão disponíveis nesta demonstração.",
+            },
+            {
+              text: "Suporte",
+              icon: CircleHelp,
+              message:
+                "O atendimento de suporte não está disponível nesta demonstração.",
+            },
             { to: "/orders", text: "Meus pedidos", icon: ShoppingCart },
-          ].map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              className={path === item.to ? "selected" : ""}
-            >
-              <item.icon size={18} />
-              {item.text}
-            </Link>
-          ))}
-          <button onClick={logout}>
+          ].map((item) =>
+            item.to ? (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={path === item.to ? "selected" : ""}
+              >
+                <item.icon size={18} />
+                {item.text}
+              </Link>
+            ) : (
+              <button
+                key={item.text}
+                type="button"
+                onClick={() => notice(item.message!)}
+              >
+                <item.icon size={18} />
+                {item.text}
+              </button>
+            ),
+          )}
+          <button className="account-logout" onClick={logout}>
             <LogOut size={18} />
             Sair
           </button>
@@ -80,6 +118,9 @@ export function ProfilePage() {
 function ProfileForm({ user }: { user: User }) {
   const [avatar, setAvatar] = useState(user.avatar),
     notice = useNotice();
+  const avatarInput = useRef<HTMLInputElement>(null);
+  const avatarReader = useRef<FileReader | null>(null);
+  useEffect(() => () => avatarReader.current?.abort(), []);
   const form = useApiForm(
     profileSchema,
     (data) => api.put("/profile", data),
@@ -149,10 +190,13 @@ function ProfileForm({ user }: { user: User }) {
                 <UserRound size={40} />
               )}
               <input
+                ref={avatarInput}
+                className="sr-only"
                 id="avatar-file"
                 type="file"
                 accept="image/png,image/jpeg,image/webp"
                 onChange={(e) => {
+                  avatarReader.current?.abort();
                   const file = e.target.files?.[0];
                   if (!file) return;
                   if (
@@ -162,14 +206,30 @@ function ProfileForm({ user }: { user: User }) {
                     )
                   ) {
                     notice("Escolha PNG, JPEG ou WebP de até 500 KB.");
+                    e.target.value = "";
                     return;
                   }
                   const reader = new FileReader();
+                  avatarReader.current = reader;
                   reader.onload = () => setAvatar(String(reader.result));
                   reader.readAsDataURL(file);
                 }}
               />
-              <button type="button" onClick={() => setAvatar("")}>
+              <Button
+                type="button"
+                onClick={() => avatarInput.current?.click()}
+              >
+                Alterar
+              </Button>
+              <button
+                type="button"
+                onClick={() => {
+                  avatarReader.current?.abort();
+                  if (avatarInput.current) avatarInput.current.value = "";
+                  setAvatar("");
+                  notice("Avatar removido. Salve o perfil para confirmar.");
+                }}
+              >
                 Remover
               </button>
             </div>
@@ -461,6 +521,7 @@ export function OrdersPage() {
                   }[o.status]
                 }
               </span>
+              <small>Ver detalhes do pedido →</small>
             </Link>
           ))}
         </div>

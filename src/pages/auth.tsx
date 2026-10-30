@@ -158,6 +158,7 @@ export function AuthPage({ register = false }: { register?: boolean }) {
                 )
               }
             >
+              <img src="/assets/google.svg" alt="" width="20" height="20" />
               Continuar com Google
             </Button>
             <Button
@@ -169,6 +170,12 @@ export function AuthPage({ register = false }: { register?: boolean }) {
                 )
               }
             >
+              <img
+                src="/assets/facebook-login.svg"
+                alt=""
+                width="20"
+                height="20"
+              />
               Continuar com Facebook
             </Button>
             <div className="auth-switch">

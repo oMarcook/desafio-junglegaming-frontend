@@ -42,6 +42,40 @@ test("registration validates and persists profile, avatar and password", async (
   await expect(page.getByLabel("Nome de exibição")).toHaveValue(
     "Colecionador Atualizado",
   );
+  await page.getByRole("button", { name: "Remover", exact: true }).click();
+  await expect(page.getByAltText("Seu avatar")).toHaveCount(0);
+  await expect(page.getByLabel("Avatar", { exact: true })).toHaveValue("");
+  await page.getByRole("button", { name: "Salvar perfil" }).click();
+  await expect(
+    page.getByRole("status").filter({ hasText: "Perfil atualizado." }),
+  ).toBeVisible();
+  await page.reload();
+  await expect(page.getByLabel("Nome de exibição")).toBeVisible();
+  await expect(page.getByAltText("Seu avatar")).toHaveCount(0);
+  const avatarFile = {
+    name: "avatar.png",
+    mimeType: "image/png",
+    buffer: Buffer.from(
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=",
+      "base64",
+    ),
+  };
+  await page.getByLabel("Avatar", { exact: true }).setInputFiles(avatarFile);
+  await expect(page.getByAltText("Seu avatar")).toBeVisible();
+  await page.getByRole("button", { name: "Remover", exact: true }).click();
+  await expect(page.getByLabel("Avatar", { exact: true })).toHaveValue("");
+  await page.getByLabel("Avatar", { exact: true }).setInputFiles(avatarFile);
+  await expect(page.getByAltText("Seu avatar")).toBeVisible();
+  await page.getByRole("button", { name: "Dispensar aviso" }).click();
+  await page.locator(".password-form").scrollIntoViewIfNeeded();
+  await page.getByRole("button", { name: "Salvar senha" }).click();
+  await expect(
+    page.getByText("Preencha a senha atual", { exact: true }),
+  ).toBeVisible();
+  await expect(page.getByLabel("Senha atual", { exact: true })).toHaveAttribute(
+    "aria-invalid",
+    "true",
+  );
   await page.getByLabel("Senha atual", { exact: true }).fill("SenhaNova123!");
   await page.getByLabel("Nova senha", { exact: true }).fill("SenhaFinal123!");
   await page
