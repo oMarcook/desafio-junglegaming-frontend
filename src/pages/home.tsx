@@ -411,7 +411,7 @@ export function NftCard({ nft, index = 0 }: { nft: Nft; index?: number }) {
     navigate = useNavigate(),
     favorite = favorites.data?.includes(nft.id) || false;
   return (
-    <article className={`nft-card nft-slot-${index}`}>
+    <article className="nft-card">
       <Link to="/nft/$id" params={{ id: nft.id }} className="nft-art">
         <img
           src={nft.image}

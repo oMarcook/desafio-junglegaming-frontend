@@ -353,12 +353,6 @@ input[type="radio"] {
   aspect-ratio: 1;
   height: auto;
 }
-.nft-slot-3 .nft-art img {
-  width: 224px;
-  height: 286px;
-  max-width: calc(100% - 30px);
-  border-radius: 13px;
-}
 .nft-name {
   display: block;
   font-size: 16px;
@@ -958,10 +952,6 @@ main:focus {
   .nft-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 24px 16px;
-    align-items: start;
-  }
-  .nft-card:nth-child(even) {
-    transform: translateY(32px);
   }
   .nft-art {
     height: auto;
@@ -969,8 +959,7 @@ main:focus {
     border-radius: 28px;
     padding: 12px 4px 20px;
   }
-  .nft-art img,
-  .nft-slot-3 .nft-art img {
+  .nft-art img {
     width: 100%;
     height: auto;
     max-width: none;

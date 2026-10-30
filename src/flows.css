@@ -230,11 +230,6 @@
 .recommendation-grid .nft-art {
   height: 255px;
 }
-.recommendation-grid .nft-slot-3 .nft-art img {
-  width: calc(100% - 8px);
-  height: auto;
-  aspect-ratio: 1;
-}
 .recommendation-grid .nft-name {
   font-size: 14px;
 }
@@ -1098,9 +1093,6 @@
   .recommendation-grid .nft-art {
     height: auto;
     aspect-ratio: 175/200;
-  }
-  .recommendation-grid .nft-card {
-    transform: none;
   }
   .cart-layout {
     display: block;
