@@ -2,13 +2,29 @@ import {
   createRootRoute,
   createRoute,
   createRouter,
+  useParams,
 } from "@tanstack/react-router";
 import { Layout } from "./components/layout";
 import { EmptyState } from "./components/feedback";
 import { HomePage, initialSearch } from "./pages/home";
 import type { CatalogSearch } from "./domain/types";
+import { DetailPage } from "./pages/detail";
+import { CartPage } from "./pages/cart";
+import { AuthPage } from "./pages/auth";
+import {
+  FavoritesPage,
+  OrdersPage,
+  ProfilePage,
+  WalletsPage,
+} from "./pages/account";
+import { CheckoutPage, OrderPage } from "./pages/checkout";
+import { Protected, requireSession, safeReturn } from "./lib/auth";
+import { ErrorState } from "./components/feedback";
 const root = createRootRoute({
   component: Layout,
+  errorComponent: ({ error, reset }) => (
+    <ErrorState error={error} retry={reset} />
+  ),
   notFoundComponent: () => (
     <EmptyState title="Página não encontrada">
       <a href="/">Voltar ao catálogo</a>
@@ -32,56 +48,95 @@ const home = createRoute({
   }),
   component: HomePage,
 });
-function PendingDesign() {
-  return (
-    <EmptyState title="Tela em implementação">
-      <p>O layout desta tela aguarda a referência completa do Figma.</p>
-      <a href="/">Voltar ao catálogo</a>
-    </EmptyState>
-  );
-}
 const detail = createRoute({
   getParentRoute: () => root,
   path: "/nft/$id",
-  component: PendingDesign,
+  component: DetailPage,
 });
 const cart = createRoute({
   getParentRoute: () => root,
   path: "/cart",
-  component: PendingDesign,
+  component: CartPage,
 });
 const login = createRoute({
   getParentRoute: () => root,
   path: "/login",
   validateSearch: (s: Record<string, unknown>) => ({
-    redirect:
-      typeof s.redirect === "string" &&
-      s.redirect.startsWith("/") &&
-      !s.redirect.startsWith("//")
-        ? s.redirect
-        : "/",
+    redirect: safeReturn(s.redirect),
   }),
-  component: PendingDesign,
+  component: () => <AuthPage />,
+});
+const register = createRoute({
+  getParentRoute: () => root,
+  path: "/register",
+  validateSearch: (s: Record<string, unknown>) => ({
+    redirect: safeReturn(s.redirect),
+  }),
+  component: () => <AuthPage register />,
+});
+const checkout = createRoute({
+  getParentRoute: () => root,
+  path: "/checkout",
+  beforeLoad: ({ location }) => requireSession(location),
+  component: () => (
+    <Protected>
+      <CheckoutPage />
+    </Protected>
+  ),
 });
 const profile = createRoute({
   getParentRoute: () => root,
   path: "/profile",
-  component: PendingDesign,
+  beforeLoad: ({ location }) => requireSession(location),
+  component: () => (
+    <Protected>
+      <ProfilePage />
+    </Protected>
+  ),
 });
 const wallets = createRoute({
   getParentRoute: () => root,
   path: "/wallets",
-  component: PendingDesign,
+  beforeLoad: ({ location }) => requireSession(location),
+  component: () => (
+    <Protected>
+      <WalletsPage />
+    </Protected>
+  ),
 });
 const favorites = createRoute({
   getParentRoute: () => root,
   path: "/favorites",
-  component: PendingDesign,
+  beforeLoad: ({ location }) => requireSession(location),
+  component: () => (
+    <Protected>
+      <FavoritesPage />
+    </Protected>
+  ),
 });
 const orders = createRoute({
   getParentRoute: () => root,
   path: "/orders",
-  component: PendingDesign,
+  beforeLoad: ({ location }) => requireSession(location),
+  component: () => (
+    <Protected>
+      <OrdersPage />
+    </Protected>
+  ),
+});
+function OrderRoute() {
+  const { id } = useParams({ strict: false });
+  return (
+    <Protected>
+      <OrderPage id={id || ""} />
+    </Protected>
+  );
+}
+const order = createRoute({
+  getParentRoute: () => root,
+  path: "/orders/$id",
+  beforeLoad: ({ location }) => requireSession(location),
+  component: OrderRoute,
 });
 export const router = createRouter({
   routeTree: root.addChildren([
@@ -93,6 +148,9 @@ export const router = createRouter({
     wallets,
     favorites,
     orders,
+    order,
+    register,
+    checkout,
   ]),
   defaultPreload: "intent",
   scrollRestoration: true,

@@ -1,5 +1,6 @@
 import { createRoot } from "react-dom/client";
 import "./styles.css";
+import "./flows.css";
 async function bootstrap() {
   if (import.meta.env.VITE_ENABLE_MOCKS !== "false") {
     const { startMocks } = await import("./mocks/browser");

@@ -24,6 +24,28 @@ export function Layout() {
     [demo, setDemo] = useState(false);
   const connection = useRef<ReturnType<typeof connectRealtime> | null>(null);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const authPage = pathname === "/login" || pathname === "/register";
+  const receiptPage = pathname.startsWith("/orders/");
+  const accountPage = [
+    "/profile",
+    "/wallets",
+    "/favorites",
+    "/orders",
+  ].includes(pathname);
+  const marketPage =
+    pathname.startsWith("/nft/") ||
+    pathname === "/cart" ||
+    pathname === "/checkout";
+  useEffect(() => {
+    if (!session.data?.expiresAt) return;
+    const timer = setTimeout(
+      () => {
+        void queryClient.invalidateQueries({ queryKey: ["session"] });
+      },
+      Math.max(0, session.data.expiresAt - Date.now()) + 20,
+    );
+    return () => clearTimeout(timer);
+  }, [session.data?.expiresAt]);
   useEffect(() => {
     if (!session.isSuccess) return;
     connection.current = connectRealtime(
@@ -50,26 +72,11 @@ export function Layout() {
       <a className="skip-link" href="#main">
         Pular para conteúdo
       </a>
-      <div className="page-wrap">
-        <header className="desktop-header">
-          <Link
-            to="/"
-            search={{
-              q: "",
-              collections: "",
-              networks: "",
-              min: "",
-              max: "",
-              sort: "recent",
-              page: 1,
-              tab: "all",
-            }}
-            className="wordmark"
-            aria-label="Kurio início"
-          >
-            KURIO
-          </Link>
-          <nav aria-label="Navegação principal">
+      <div
+        className={`page-wrap ${authPage ? "auth-page" : ""} ${accountPage ? "account-page" : ""} ${marketPage ? "market-page" : ""} ${receiptPage ? "receipt-page" : ""}`}
+      >
+        {!receiptPage && (
+          <header className="desktop-header">
             <Link
               to="/"
               search={{
@@ -82,96 +89,119 @@ export function Layout() {
                 page: 1,
                 tab: "all",
               }}
-              className={pathname === "/" ? "active" : ""}
+              className="wordmark"
+              aria-label="Kurio início"
             >
-              Início
+              KURIO
             </Link>
-            <a href="/#catalog">Mercado</a>
-            <button
-              onClick={() =>
-                notice(
-                  "O diretório de criadores não faz parte desta demonstração.",
-                )
-              }
-            >
-              Criadores
-            </button>
-            <a href="/#journal">Aprenda</a>
-          </nav>
-          <div className="header-actions">
-            <a href="/#search" aria-label="Buscar NFTs">
-              <img src="/assets/bd8c9.svg" alt="" />
-            </a>
-            <Link
-              to="/cart"
-              className="cart-link"
-              aria-label={`Carrinho, ${total} itens`}
-            >
-              <img src="/assets/c0c08.svg" alt="" />
-              <span>{total}</span>
-            </Link>
-            {session.data?.user ? (
-              <>
-                <Link to="/profile" aria-label="Meu perfil">
-                  <UserRound size={20} />
-                </Link>
-                <button onClick={logout} aria-label="Sair">
-                  <LogOut size={18} />
-                </button>
-              </>
-            ) : (
-              <Button asChild>
-                <Link to="/login" search={{ redirect: "/" }}>
-                  <img src="/assets/62554.svg" alt="" />
-                  Entrar
-                </Link>
-              </Button>
-            )}
-          </div>
-        </header>
+            <nav aria-label="Navegação principal">
+              <Link
+                to="/"
+                search={{
+                  q: "",
+                  collections: "",
+                  networks: "",
+                  min: "",
+                  max: "",
+                  sort: "recent",
+                  page: 1,
+                  tab: "all",
+                }}
+                className={pathname === "/" ? "active" : ""}
+              >
+                Início
+              </Link>
+              <a href="/#catalog" className={marketPage ? "active" : ""}>
+                Mercado
+              </a>
+              <button
+                onClick={() =>
+                  notice(
+                    "O diretório de criadores não faz parte desta demonstração.",
+                  )
+                }
+              >
+                Criadores
+              </button>
+              <a href="/#journal">Aprenda</a>
+            </nav>
+            <div className="header-actions">
+              <a href="/#search" aria-label="Buscar NFTs">
+                <img src="/assets/bd8c9.svg" alt="" />
+              </a>
+              <Link
+                to="/cart"
+                className="cart-link"
+                aria-label={`Carrinho, ${total} itens`}
+              >
+                <img src="/assets/c0c08.svg" alt="" />
+                <span>{total}</span>
+              </Link>
+              {session.data?.user ? (
+                <>
+                  <Link to="/profile" aria-label="Meu perfil">
+                    <UserRound size={20} />
+                  </Link>
+                  <button onClick={logout} aria-label="Sair">
+                    <LogOut size={18} />
+                  </button>
+                </>
+              ) : (
+                <Button asChild>
+                  <Link to="/login" search={{ redirect: "/" }}>
+                    <img src="/assets/62554.svg" alt="" />
+                    Entrar
+                  </Link>
+                </Button>
+              )}
+            </div>
+          </header>
+        )}
         <main id="main" tabIndex={-1}>
           <Outlet />
         </main>
-        <Footer />
+        {!authPage && !accountPage && !receiptPage && <Footer />}
       </div>
-      <nav className="mobile-nav" aria-label="Navegação mobile">
-        <Link
-          to="/"
-          search={{
-            q: "",
-            collections: "",
-            networks: "",
-            min: "",
-            max: "",
-            sort: "recent",
-            page: 1,
-            tab: "all",
-          }}
-          aria-label="Início"
-        >
-          <Home />
-        </Link>
-        <Link to="/favorites" aria-label="Favoritos">
-          <Heart />
-        </Link>
-        <button
-          className="scan"
-          aria-label="Sobre a demonstração"
-          onClick={() =>
-            notice(
-              "Kurio é uma demonstração. Carteiras e transações são simuladas.",
-            )
-          }
-        >
-          <ScanLine />
-        </button>
-        <Link to="/cart" aria-label={`Carrinho, ${total} itens`}>
-          <ShoppingCart />
-        </Link>
-        <Link to="/profile" aria-label="Perfil">
-          <UserRound />
-        </Link>
-      </nav>
+      {!authPage && !marketPage && !receiptPage && (
+        <nav className="mobile-nav" aria-label="Navegação mobile">
+          <Link
+            to="/"
+            search={{
+              q: "",
+              collections: "",
+              networks: "",
+              min: "",
+              max: "",
+              sort: "recent",
+              page: 1,
+              tab: "all",
+            }}
+            aria-label="Início"
+          >
+            <Home />
+          </Link>
+          <Link to="/favorites" aria-label="Favoritos">
+            <Heart />
+          </Link>
+          <button
+            className="scan"
+            aria-label="Sobre a demonstração"
+            onClick={() =>
+              notice(
+                "Kurio é uma demonstração. Carteiras e transações são simuladas.",
+              )
+            }
+          >
+            <ScanLine />
+          </button>
+          <Link to="/cart" aria-label={`Carrinho, ${total} itens`}>
+            <ShoppingCart />
+          </Link>
+          <Link to="/profile" aria-label="Perfil">
+            <UserRound />
+          </Link>
+        </nav>
+      )}
       {import.meta.env.VITE_ENABLE_MOCKS !== "false" && (
         <>
           <button className="demo-toggle" onClick={() => setDemo(true)}>

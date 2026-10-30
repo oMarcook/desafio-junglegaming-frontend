@@ -87,6 +87,7 @@ export const handlers = [
       return HttpResponse.json({ scenario: db.scenario });
     }
     const scenario = db.scenario;
+    const requestUser = account()?.user.id;
     await delay(
       scenario === "slow"
         ? 2200
@@ -107,7 +108,11 @@ export const handlers = [
       db.session = null;
       save();
     }
-    if (privatePaths.some((p) => path.startsWith(p)) && !account())
+    if (
+      (privatePaths.some((p) => path.startsWith(p)) ||
+        request.headers.get("X-Require-Session") === "true") &&
+      (!account() || requestUser !== account()?.user.id)
+    )
       return fail(
         401,
         "UNAUTHORIZED",
@@ -188,6 +193,7 @@ export const handlers = [
         }
         owner.cart.items = owner.cart.items.filter((i) => i.quantity > 0);
         owner.cart.version++;
+        if (!owner.cart.coupon) owner.cart.coupon = db.guest.coupon;
         db.guest = { items: [], coupon: "", version: 1 };
         db.session = { userId: owner.user.id, expiresAt: Date.now() + 3600000 };
         save();

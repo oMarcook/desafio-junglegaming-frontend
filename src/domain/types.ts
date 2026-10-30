@@ -24,6 +24,9 @@ export interface User {
   email: string;
   phone: string;
   avatar: string;
+  username?: string;
+  ens?: string;
+  walletLabel?: string;
 }
 export interface Session {
   user: User | null;
@@ -35,6 +38,12 @@ export interface Wallet {
   address: string;
   network: Network;
   primary: boolean;
+  displayName?: string;
+  profileName?: string;
+  email?: string;
+  provider?: string;
+  referral?: string;
+  ens?: string;
 }
 export interface CartItem {
   nftId: string;

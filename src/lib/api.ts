@@ -35,7 +35,8 @@ export const errorFields = (error: unknown) =>
 export function clearPrivateData() {
   queryClient.cancelQueries();
   queryClient.removeQueries({
-    predicate: (q) => q.queryKey[0] !== "catalog" && q.queryKey[0] !== "nft",
+    predicate: (q) =>
+      !["catalog", "nft", "session"].includes(String(q.queryKey[0])),
   });
 }
 api.interceptors.response.use(

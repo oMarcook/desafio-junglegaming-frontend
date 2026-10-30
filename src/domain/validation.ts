@@ -20,6 +20,12 @@ export const registerSchema = z
     message: "As senhas não coincidem",
   });
 export const profileSchema = z.object({
+  username: z.string().trim().min(2, "Informe seu nome de usuário").optional(),
+  ens: z
+    .string()
+    .regex(/^$|^[a-z0-9-]+\.eth$/, "Use um nome terminado em .eth")
+    .optional(),
+  walletLabel: z.string().max(60).optional(),
   name: z.string().trim().min(2, "Informe seu nome"),
   email,
   phone: z.string().max(30),
@@ -51,6 +57,15 @@ export const walletSchema = z.object({
     ),
   network: z.enum(["Ethereum", "Polygon", "Solana"]),
   primary: z.boolean(),
+  displayName: z.string().max(80).optional(),
+  profileName: z.string().max(80).optional(),
+  email: z.union([email, z.literal("")]).optional(),
+  provider: z.enum(["MetaMask", "WalletConnect", "Coinbase Wallet"]).optional(),
+  referral: z.string().max(60).optional(),
+  ens: z
+    .string()
+    .regex(/^$|^[a-z0-9-]+\.eth$/, "Use um nome terminado em .eth")
+    .optional(),
 });
 export const collectorSchema = z.object({
   name: z.string().trim().min(2, "Informe seu nome"),
