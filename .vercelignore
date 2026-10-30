@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.design/
+.git/
+.env.local
+.env.*.local
+test-results/
+playwright-report/
+reports/
+tests/e2e/visual.spec.ts-snapshots/
+*.tsbuildinfo
