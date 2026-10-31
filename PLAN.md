@@ -12,7 +12,7 @@ Referência: Figma `MyWoBOc1rDIB63aXDxMM48`. Stack obrigatória: React, TypeScri
 | Descoberta | Catálogo responsivo, URL, busca/filtros/ordenação/paginação. |
 | Compra e conta | Detalhe, carrinho, pagamento, recibo, login/cadastro, perfil e carteiras. |
 | Correções | Expiração, identidade durante requisições lentas, reset e metadados do checkout. |
-| Testes | E2E, contratos, falhas, responsividade e oito baselines desktop/mobile. |
+| Testes | E2E, contratos, falhas, responsividade e dez baselines desktop/mobile. |
 | Performance | WebP, skeleton do detalhe, Lighthouse e relatórios. |
 | Documentação | README, arquitetura e performance. |
 | Publicação | Produção em https://desafio-junglegaming-frontend.vercel.app. |
@@ -33,9 +33,9 @@ O histórico de Git registra essas etapas em commits separados.
 - [x] Perfil/avatar/senha/carteiras com validação e persistência.
 - [x] Teclado, foco de diálogo, skeletons, falhas e estados vazios.
 - [x] Larguras 390, 768 e 1440 nas telas principais.
-- [x] 49 testes E2E aprovados; um teste exclusivamente mobile ignorado no projeto desktop.
+- [x] 64 testes E2E aprovados; dois casos ignorados somente no viewport ao qual não se aplicam.
 - [x] Três testes unitários monetários, tipos, lint e build aprovados.
-- [x] Baselines de início, detalhe, carrinho e pagamento versionadas.
+- [x] Baselines de início, detalhe, carrinho, pagamento e confirmação versionadas.
 - [x] Configuração e 12 relatórios Lighthouse HTML/JSON; medianas em `PERFORMANCE.md`.
 - [x] README, arquitetura e resultados consolidados.
 - [x] Deploy público, rotas diretas e 26 testes de conta, compra e resiliência aprovados na Vercel em desktop/mobile.

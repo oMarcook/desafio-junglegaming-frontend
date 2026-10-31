@@ -64,7 +64,7 @@ Ambas têm carteiras de exemplo. Novas contas começam sem carteira: cadastre um
 | `npm run lint` | ESLint. |
 | `npm test` | Invariantes de precisão monetária. |
 | `npm run test:e2e -- --workers=2` | Fluxos Chromium desktop/mobile e relatório HTML. |
-| `npm run test:visual` | Baselines de início, detalhe, carrinho e pagamento. |
+| `npm run test:visual` | Baselines de início, detalhe, carrinho, pagamento e confirmação. |
 | `npm run audit` | 12 medições Lighthouse; requer preview ativo em 4173. |
 | `npm run assets:optimize` | Recria WebPs usando os PNGs originais. |
 
@@ -72,7 +72,7 @@ O relatório é gerado em `playwright-report/index.html`; abra com `npx playwrig
 
 Para auditar: `npm run build`, `npm run preview` e, em outro terminal, `npm run audit`. Resultados e condições estão em [PERFORMANCE.md](PERFORMANCE.md).
 
-Validação em 30/10/2026: **49 E2E aprovados**, um caso de foco exclusivo mobile ignorado no projeto desktop, **3 testes unitários aprovados**, TypeScript/lint/build aprovados. As quatro combinações página/perfil atingiram as metas Lighthouse: performance 91–99, acessibilidade 98–100, boas práticas e SEO 100. O relatório entregue não contém falhas; traces são retidos automaticamente quando uma execução falha.
+Última validação funcional: **64 E2E aprovados**, dois casos ignorados somente no viewport ao qual não se aplicam (foco do filtro mobile e logout pelo cabeçalho desktop), **3 testes unitários aprovados**, TypeScript/lint/build aprovados. A cobertura inclui busca pelas lupas, histórico, conta, compra, falhas de rede, controles de demonstração e avisos em diálogos. Na auditoria Lighthouse documentada em `PERFORMANCE.md`, as quatro combinações página/perfil atingiram as metas: performance 91–99, acessibilidade 98–100, boas práticas e SEO 100. O relatório entregue não contém falhas; traces são retidos automaticamente quando uma execução falha.
 
 Uma instalação limpa também foi verificada com `npm ci` e `npm run build`, sem aproveitar o `node_modules` de desenvolvimento.
 
