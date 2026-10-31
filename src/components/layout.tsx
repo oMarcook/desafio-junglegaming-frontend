@@ -1,4 +1,9 @@
-import { Link, Outlet, useRouterState } from "@tanstack/react-router";
+import {
+  Link,
+  Outlet,
+  useNavigate,
+  useRouterState,
+} from "@tanstack/react-router";
 import {
   Heart,
   Home,
@@ -25,6 +30,7 @@ export function Layout() {
     [demo, setDemo] = useState(false);
   const connection = useRef<ReturnType<typeof connectRealtime> | null>(null);
   const logout = useLogout();
+  const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const authPage = pathname === "/login" || pathname === "/register";
   const receiptPage = pathname.startsWith("/orders/");
@@ -61,6 +67,21 @@ export function Layout() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+  async function openSearch() {
+    if (pathname !== "/") await navigate({ href: "/" });
+    requestAnimationFrame(() => {
+      const input = Array.from(
+        document.querySelectorAll<HTMLInputElement>(
+          "input[data-catalog-search]",
+        ),
+      ).find(
+        (field) =>
+          field.getClientRects().length > 0 && !field.closest("[inert]"),
+      );
+      input?.focus({ preventScroll: true });
+      input?.scrollIntoView({ block: "center" });
+    });
+  }
   const total = cart.data?.items.reduce((sum, i) => sum + i.quantity, 0) || 0;
   return (
     <>
@@ -121,9 +142,13 @@ export function Layout() {
               <a href="/#journal">Aprenda</a>
             </nav>
             <div className="header-actions">
-              <a href="/#search" aria-label="Buscar NFTs">
+              <button
+                type="button"
+                onClick={openSearch}
+                aria-label="Buscar NFTs"
+              >
                 <img src="/assets/bd8c9.svg" alt="" />
-              </a>
+              </button>
               <Link
                 to="/cart"
                 className="cart-link"

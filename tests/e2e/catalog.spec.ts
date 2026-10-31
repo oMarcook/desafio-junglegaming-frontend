@@ -51,6 +51,58 @@ test("mobile filter dialog keeps focus and closes with Escape", async ({
     page.getByRole("button", { name: "Abrir filtros" }),
   ).toBeFocused();
 });
+
+test("search icons open the visible field, submit queries and restore search history", async ({
+  page,
+  isMobile,
+}) => {
+  await page.goto(isMobile ? "/" : "/nft/nft-1");
+  const input = page.getByRole("textbox", {
+    name: isMobile ? "Buscar NFTs" : "Buscar NFTs no catálogo",
+    exact: true,
+  });
+  if (!isMobile) {
+    await page
+      .locator(".desktop-header")
+      .getByRole("button", { name: "Buscar NFTs", exact: true })
+      .click();
+    await expect(input).toBeFocused();
+  }
+  const submit = isMobile
+    ? page.getByRole("button", { name: "Buscar NFTs", exact: true })
+    : page.getByRole("button", { name: "Buscar", exact: true });
+  await input.fill("Emerald");
+  await submit.click();
+  await expect(page).toHaveURL(
+    (url) => url.searchParams.get("q") === "Emerald",
+  );
+  await expect(page.locator(".nft-name").first()).toHaveText(
+    "Emerald Ape #042",
+  );
+  await input.fill("Sage");
+  await submit.click();
+  await expect(page.locator(".nft-name").first()).toHaveText("Sage Nomad #009");
+  await page.goBack();
+  await expect(input).toHaveValue("Emerald");
+  await expect(page.locator(".nft-name").first()).toHaveText(
+    "Emerald Ape #042",
+  );
+  if (!isMobile) {
+    await page
+      .locator(".desktop-header")
+      .getByRole("button", { name: "Buscar NFTs", exact: true })
+      .click();
+    await expect(input).toBeFocused();
+    await expect(input).toHaveValue("Emerald");
+  }
+  await input.fill("");
+  await submit.click();
+  await expect(page).toHaveURL(
+    (url) =>
+      url.searchParams.get("q") === "" && url.searchParams.get("page") === "1",
+  );
+  await expect(page.locator(".nft-card")).toHaveCount(9);
+});
 test("no horizontal overflow at target widths", async ({ page }) => {
   await page.goto("/");
   for (const width of [390, 768, 1440]) {

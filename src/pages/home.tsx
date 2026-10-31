@@ -1,5 +1,5 @@
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Heart, SlidersHorizontal } from "lucide-react";
 import type { CatalogSearch, Nft } from "../domain/types";
 import {
@@ -63,6 +63,9 @@ export function HomePage() {
     [draft, setDraft] = useState(search.q),
     notice = useNotice();
   useEffect(() => {
+    setDraft(search.q);
+  }, [search.q]);
+  useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const timer = window.setTimeout(() => {
       setHeroSlide((current) => (current + 1) % heroSlides.length);
@@ -71,6 +74,16 @@ export function HomePage() {
   }, [heroSlide]);
   function change(patch: Partial<CatalogSearch>) {
     void navigate({ to: "/", search: { ...search, page: 1, ...patch } });
+  }
+  function submitSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const q = draft.trim();
+    setDraft(q);
+    void navigate({
+      to: "/",
+      search: { ...search, q, page: 1 },
+      hash: "catalog",
+    });
   }
   function toggle(field: "collections" | "networks", value: string) {
     const values = search[field].split(",").filter(Boolean);
@@ -166,20 +179,25 @@ export function HomePage() {
     <>
       <div className="mobile-search">
         <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            change({ q: draft });
-          }}
+          onSubmit={submitSearch}
+          role="search"
+          aria-label="Pesquisa mobile"
         >
-          <img src="/assets/ce4db.svg" alt="" />
+          <button
+            type="submit"
+            aria-label="Buscar NFTs"
+            className="search-submit"
+          >
+            <img src="/assets/ce4db.svg" alt="" />
+          </button>
           <input
             id="search"
+            data-catalog-search
             aria-label="Buscar NFTs"
             placeholder="Explorar coleções"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
           />
-          <button className="sr-only">Buscar</button>
         </form>
         <button
           className="filter-trigger"
@@ -293,12 +311,12 @@ export function HomePage() {
           </div>
           <form
             className="desktop-search"
-            onSubmit={(e) => {
-              e.preventDefault();
-              change({ q: draft });
-            }}
+            role="search"
+            aria-label="Pesquisa do catálogo"
+            onSubmit={submitSearch}
           >
             <input
+              data-catalog-search
               aria-label="Buscar NFTs no catálogo"
               placeholder="Buscar por nome ou coleção"
               value={draft}
