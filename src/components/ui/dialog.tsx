@@ -1,6 +1,7 @@
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import { useRef, type ReactNode } from "react";
+import { keepDialogOpenForNotice } from "../feedback";
 export function Dialog({
   open,
   onOpenChange,
@@ -18,6 +19,7 @@ export function Dialog({
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="fixed inset-0 z-40 bg-black/75" />
         <DialogPrimitive.Content
+          onInteractOutside={keepDialogOpenForNotice}
           onOpenAutoFocus={() => {
             returnFocus.current = document.activeElement as HTMLElement;
           }}

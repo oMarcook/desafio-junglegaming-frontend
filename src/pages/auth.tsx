@@ -7,7 +7,7 @@ import { loginSchema, registerSchema } from "../domain/validation";
 import { Field } from "../components/field";
 import { PasswordField } from "../components/password-field";
 import { Button } from "../components/ui/button";
-import { useNotice } from "../components/feedback";
+import { keepDialogOpenForNotice, useNotice } from "../components/feedback";
 import { HomePage } from "./home";
 import type { Session } from "../domain/types";
 import { safeReturn } from "../lib/auth";
@@ -50,6 +50,7 @@ export function AuthPage({ register = false }: { register?: boolean }) {
         <DialogPrimitive.Portal>
           <DialogPrimitive.Overlay className="auth-overlay" />
           <DialogPrimitive.Content
+            onInteractOutside={keepDialogOpenForNotice}
             aria-describedby="auth-description"
             className={`auth-card ${register ? "register-card" : ""}`}
           >

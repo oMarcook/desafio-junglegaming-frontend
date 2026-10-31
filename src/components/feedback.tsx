@@ -3,6 +3,14 @@ import { Button } from "./ui/button";
 import { errorMessage } from "../lib/api";
 const NoticeContext = createContext<(message: string) => void>(() => {});
 export const useNotice = () => useContext(NoticeContext);
+export function keepDialogOpenForNotice(event: Event) {
+  if (
+    event.target instanceof Element &&
+    event.target.closest(".toast, [data-notice-dismiss]")
+  ) {
+    event.preventDefault();
+  }
+}
 export function NoticeProvider({ children }: { children: ReactNode }) {
   const [message, setMessage] = useState("");
   return (
@@ -12,7 +20,11 @@ export function NoticeProvider({ children }: { children: ReactNode }) {
         {message && (
           <>
             <span>{message}</span>
-            <button onClick={() => setMessage("")} aria-label="Dispensar aviso">
+            <button
+              data-notice-dismiss
+              onClick={() => setMessage("")}
+              aria-label="Dispensar aviso"
+            >
               ×
             </button>
           </>

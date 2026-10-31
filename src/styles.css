@@ -652,6 +652,7 @@ input[type="radio"] {
   height: 300px;
 }
 .toast {
+  pointer-events: auto;
   position: fixed;
   bottom: 38px;
   right: 24px;
