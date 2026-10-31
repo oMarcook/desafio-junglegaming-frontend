@@ -320,6 +320,8 @@ export function Layout() {
               <Button
                 onClick={async () => {
                   await api.post("/simulation/expire");
+                  setDemo(false);
+                  notice("Sua sessão expirou. Entre novamente para continuar.");
                   await queryClient.invalidateQueries({
                     queryKey: ["session"],
                   });

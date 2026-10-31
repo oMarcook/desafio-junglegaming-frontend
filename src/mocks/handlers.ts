@@ -55,10 +55,13 @@ export const handlers = [
       path = url.pathname.slice(4),
       method = request.method;
     if (path.startsWith("/simulation")) {
-      const data =
-        method === "GET"
-          ? {}
-          : ((await request.json()) as Record<string, unknown>);
+      const body = method === "GET" ? "" : await request.text();
+      let data: Record<string, unknown> = {};
+      try {
+        if (body.trim()) data = JSON.parse(body);
+      } catch {
+        return fail(400, "INVALID_JSON", "Envie dados JSON válidos.");
+      }
       if (path === "/simulation/reset") {
         await reset((data.scenario as Scenario) || "default");
         return HttpResponse.json({ ok: true });
